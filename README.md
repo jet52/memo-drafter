@@ -1,6 +1,6 @@
 # Bench Memo Generator
 
-A Python CLI tool that automates creation of legal bench memos from appellate case PDFs using a multi-stage Claude API pipeline. Built for the North Dakota Supreme Court.
+A Python CLI tool that automates creation of legal bench memos from appellate case PDFs using a multi-stage Claude API pipeline. Built as an experiment using public documents.
 
 ## Installation
 
