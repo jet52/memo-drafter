@@ -1,0 +1,13 @@
+# Build artifacts
+*.egg-info/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+.venv/
+
+# Runtime
+cache/
+output/
+input/

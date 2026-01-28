@@ -1,0 +1,40 @@
+Analyze the following appellate case documents and extract structured information.
+
+DOCUMENTS PROVIDED:
+{document_list}
+
+DOCUMENT CONTENTS:
+{document_contents}
+
+Extract the following in JSON format:
+{{
+  "case_number": "YYYYNNNN (e.g., 20250319)",
+  "case_name": "Party v. Party",
+  "appellant": "full name",
+  "appellee": "full name",
+  "lower_court": "district court county and judge name if available",
+  "procedural_posture": "Appeal from [specific order type] of the [County] District Court, [Judge Name] presiding",
+  "oral_argument_date": "date if stated in any document, otherwise null",
+  "issues_on_appeal": [
+    {{
+      "number": 1,
+      "statement": "Whether the district court erred in...",
+      "appellant_framing": "How the appellant frames this issue",
+      "appellee_framing": "How the appellee frames this issue",
+      "sub_arguments": ["specific sub-point 1", "specific sub-point 2"]
+    }}
+  ],
+  "key_facts": ["fact1 with record citation (R##)", "fact2 with record citation (R##)"],
+  "key_documents": [
+    {{"description": "Order Granting Summary Judgment", "record_cite": "R45"}}
+  ]
+}}
+
+IMPORTANT INSTRUCTIONS:
+- CONSOLIDATE overlapping issues. If the appellant raises multiple sub-arguments under the same legal theory (e.g., multiple instances of ineffective assistance of counsel), group them as sub-points under ONE issue using the "sub_arguments" field. For example, "failure to investigate surveillance video," "failure to investigate alternative suspects," and "failure to challenge 404(b) evidence" should all be sub-arguments under a single "ineffective assistance of counsel" issue.
+- Each DISTINCT legal theory or constitutional claim should be its own issue.
+- Extract the ACTUAL case number from the documents (look at captions, headers, notice of appeal).
+- Extract exact record citations (R##) wherever available. Include page and paragraph where available: (R##:page) or (R##:page:¶para).
+- For key_facts, include the record citation for each fact.
+- For key_documents, list the most important documents for judicial review.
+- Do NOT use placeholder brackets like [Date] or [page]. If information is not available, use null.

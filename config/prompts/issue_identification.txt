@@ -1,0 +1,57 @@
+For each issue on appeal, identify the legal framework and arguments.
+
+CASE ANALYSIS:
+{analysis_json}
+
+BRIEF EXCERPTS:
+{brief_excerpts}
+
+For each issue, provide the following in JSON format:
+{{
+  "issues": [
+    {{
+      "number": 1,
+      "statement": "Whether...",
+      "standard_of_review": {{
+        "standard": "de novo / abuse of discretion / clearly erroneous",
+        "authority": "exact citation from the briefs (e.g., Flanagan v. State, 2006 ND 76, ¶ 8, 712 N.W.2d 602)",
+        "explanation": "brief explanation of what standard requires"
+      }},
+      "sub_arguments": [
+        {{
+          "label": "A",
+          "point": "specific sub-argument (e.g., failure to investigate surveillance video)",
+          "appellant_arguments": [
+            {{
+              "point": "summary of argument",
+              "supporting_citations": ["exact cite from brief"],
+              "record_references": ["R##:page"]
+            }}
+          ],
+          "appellee_arguments": [
+            {{
+              "point": "summary of argument",
+              "supporting_citations": ["exact cite from brief"],
+              "record_references": ["R##:page"]
+            }}
+          ]
+        }}
+      ],
+      "applicable_precedent": [
+        {{
+          "citation": "YYYY ND ###, ¶ ##, ### N.W.2d ###",
+          "case_name": "Party v. Party",
+          "relevance": "how this case applies"
+        }}
+      ],
+      "preliminary_assessment": "Brief neutral assessment of the strength of each side's position"
+    }}
+  ]
+}}
+
+IMPORTANT INSTRUCTIONS:
+- The issue list must match EXACTLY the issues from the case analysis. Do not add, remove, or split issues.
+- If an issue has multiple sub-arguments (from the case analysis "sub_arguments" field), structure them as labeled sub-arguments (A, B, C, etc.) within that single issue.
+- Use ONLY citations that actually appear in the parties' briefs. Do not fabricate or guess citations.
+- Include full citation format: Case Name, YYYY ND ###, ¶ ##, ### N.W.2d ### (include all parts present in the brief).
+- Include specific record references with page numbers where available: R##:page.

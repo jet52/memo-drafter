@@ -1,0 +1,39 @@
+Generate a complete bench memo following the style specification provided.
+
+CASE ANALYSIS:
+{analysis_json}
+
+LEGAL FRAMING:
+{framing_json}
+
+KEY DOCUMENTS SECTION:
+{key_docs}
+
+Generate the complete memo in markdown format with the following structure:
+
+1. HEADER: Case number, case name, date of oral argument (use actual date from analysis or omit line entirely if unknown — NEVER use placeholder brackets like [Date]), author as "Central Legal Staff"
+2. QUICK REFERENCE: The key documents section provided above
+3. OPENING PARAGRAPH [¶1]: Summarize the case, identify all issues, and state your recommendation
+4. BACKGROUND: Factual and procedural history
+5. ISSUE SECTIONS: One per issue, using Roman numerals
+6. CONCLUSION: Restate recommendation
+
+STRICT FORMATTING RULES:
+- Every paragraph must be numbered [¶1], [¶2], etc. — sequential throughout the entire memo
+- Record citations: (R##), (R##:page), or (R##:page:¶para)
+- ND case citations: YYYY ND ### (e.g., 2024 ND 156)
+- Reporter citations: ### N.W.2d ### (e.g., 876 N.W.2d 234)
+- Statute citations: N.D.C.C. § ##-##-## (e.g., N.D.C.C. § 14-09-06.2)
+- Rule citations: N.D.R.App.P. ##, N.D.R.Civ.P. ##, N.D.R.Ev. ##
+- ALL CAPS for major section headings: BACKGROUND, CONCLUSION
+- Roman numerals for issue headings: I., II., III.
+- Bold the recommendation sentence in [¶1] and in CONCLUSION
+
+CONTENT RULES:
+- NEVER use placeholder brackets like [Date], [page], [County], etc. If specific information is not available from the case documents, either omit it or write "not specified in the record."
+- Each issue section must include: (a) Standard of Review with specific case authority, (b) Appellant's Arguments with citations, (c) Appellee's Arguments with citations, (d) Analysis with your assessment
+- When an issue has sub-arguments (e.g., multiple grounds for ineffective assistance), address each sub-argument within that issue section using lettered sub-headings (A., B., C.) rather than creating separate issue sections
+- Cite ONLY cases and authorities that appear in the parties' briefs — do not fabricate citations
+- Every factual assertion in BACKGROUND must have a record citation
+- Present both sides fairly before offering analysis
+- Be thorough but concise

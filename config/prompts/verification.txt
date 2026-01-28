@@ -1,0 +1,30 @@
+Review this bench memo for accuracy and completeness.
+
+MEMO:
+{memo_text}
+
+ORIGINAL CASE ANALYSIS:
+{analysis_json}
+
+Check for:
+1. All issues from the case analysis are addressed
+2. Citation format correctness (YYYY ND ###, ### N.W.2d ###, N.D.C.C. § ##-##-##)
+3. Paragraph numbering is sequential and complete
+4. Record citations are present in the BACKGROUND section
+5. Standard of review is stated for each issue
+6. Both sides' arguments are fairly presented
+7. Recommendation is stated in ¶1 and CONCLUSION
+
+Return a JSON object:
+{{
+  "issues_found": [
+    {{
+      "type": "missing_issue | citation_error | formatting | balance | other",
+      "description": "what is wrong",
+      "location": "paragraph number or section",
+      "suggestion": "how to fix"
+    }}
+  ],
+  "overall_quality": "good | needs_revision",
+  "revised_memo": "If needs_revision, provide the corrected memo here. Otherwise null."
+}}
