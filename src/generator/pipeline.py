@@ -112,7 +112,7 @@ class MemoPipeline:
             brief_excerpts=brief_excerpts,
         )
         response = await self.client.generate(
-            self.system_prompt, prompt, max_tokens=4096, temperature=0.2
+            self.system_prompt, prompt, max_tokens=8192, temperature=0.2
         )
         return _parse_json_response(response)
 

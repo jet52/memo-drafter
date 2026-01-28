@@ -1,6 +1,7 @@
 """Command-line interface for Bench Memo Generator."""
 
 import asyncio
+import re
 from pathlib import Path
 
 import click
@@ -80,7 +81,10 @@ def generate(inputs: tuple[str, ...], output: str | None, verify: bool, review: 
                 raise SystemExit(1)
         case_folder = None
         pdf_file_list = input_paths
-        label = pdf_file_list[0].stem
+        # Extract case number from filename (leading digits, e.g. "20250305" from "20250305_State-v-Landen_Apt-Br.pdf")
+        first_name = pdf_file_list[0].stem
+        match = re.match(r"(\d+)", first_name)
+        label = match.group(1) if match else first_name
         default_output_dir = pdf_file_list[0].parent / "output"
 
     if output is None:
