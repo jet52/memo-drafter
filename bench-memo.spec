@@ -1,6 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
 
+from PyInstaller.utils.hooks import collect_submodules
+
 block_cipher = None
 
 ROOT = Path(SPECPATH)
@@ -16,7 +18,7 @@ a = Analysis(
         (str(ROOT / 'config' / '__init__.py'), 'config'),
         (str(ROOT / 'config' / 'prompts' / '__init__.py'), 'config/prompts'),
     ],
-    hiddenimports=[
+    hiddenimports=collect_submodules('rich._unicode_data') + [
         'anthropic',
         'pdfminer',
         'pdfminer.high_level',

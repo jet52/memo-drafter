@@ -89,6 +89,8 @@ def generate(inputs: tuple[str, ...], output: str | None, verify: bool, review: 
         output_path = default_output_dir / f"{label}_memo.md"
     else:
         output_path = Path(output)
+        if output_path.is_dir():
+            output_path = output_path / f"{label}_memo.md"
 
     client = ClaudeClient(api_key=settings.anthropic_api_key, model=settings.claude_model)
 
@@ -126,7 +128,12 @@ def verify_cmd(memo_file: str, output: str | None, verbose: bool):
     setup_logging(verbose)
     settings = _load_settings()
     memo_path = Path(memo_file)
-    output_path = Path(output) if output else memo_path
+    if output:
+        output_path = Path(output)
+        if output_path.is_dir():
+            output_path = output_path / memo_path.name
+    else:
+        output_path = memo_path
     _run_verification(memo_path, settings, output_path)
 
 
