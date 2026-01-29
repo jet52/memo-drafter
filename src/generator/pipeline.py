@@ -28,8 +28,8 @@ class GeneratedMemo:
 
 
 def _load_prompt(name: str) -> str:
-    prompt_dir = Path(__file__).resolve().parent.parent.parent / "config" / "prompts"
-    return (prompt_dir / name).read_text()
+    from src.bundle_paths import get_config_path
+    return get_config_path("prompts", name).read_text()
 
 
 def _build_system_prompt() -> str:

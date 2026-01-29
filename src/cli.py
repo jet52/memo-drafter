@@ -10,6 +10,7 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from config.settings import Settings
+from src.bundle_paths import get_project_root
 from src.generator.claude_client import ClaudeClient
 from src.generator.memo_generator import generate_memo
 from src.utils.logging import setup_logging
@@ -17,11 +18,8 @@ from src.utils.logging import setup_logging
 console = Console()
 
 
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
-
-
 def _load_settings() -> Settings:
-    load_dotenv(_PROJECT_ROOT / ".env", override=True)
+    load_dotenv(get_project_root() / ".env", override=True)
     return Settings()
 
 
