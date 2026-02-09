@@ -1,4 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_submodules
@@ -78,3 +81,23 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
 )
+
+# Post-build: codesign and install to ~/bin
+DIST_BINARY = ROOT / 'dist' / 'bench-memo'
+INSTALL_DIR = Path.home() / 'bin'
+
+if sys.platform == 'darwin' and DIST_BINARY.exists():
+    subprocess.run(
+        ['codesign', '--force', '--sign', '-', str(DIST_BINARY)],
+        check=True,
+    )
+    print(f'Signed: {DIST_BINARY}')
+
+    INSTALL_DIR.mkdir(exist_ok=True)
+    dest = INSTALL_DIR / 'bench-memo'
+    shutil.copy2(str(DIST_BINARY), str(dest))
+    subprocess.run(
+        ['codesign', '--force', '--sign', '-', str(dest)],
+        check=True,
+    )
+    print(f'Installed: {dest}')
