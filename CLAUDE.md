@@ -44,6 +44,7 @@ bench-memo generate ./case_folder/ --output memo.md
 bench-memo generate ./case_folder/ --verify --output memo.md
 bench-memo estimate ./case_folder/
 bench-memo verify memo.md --output verified_memo.md
+bench-memo extract-cites ./case_folder/ --output items.txt
 ```
 
 ## Testing

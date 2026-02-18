@@ -79,9 +79,10 @@ def cli(ctx):
 
     \b
     COMMANDS:
-      generate  - Generate a bench memo from case PDFs
-      estimate  - Preview token count and estimated cost
-      verify    - Verify citations in an existing memo
+      generate       - Generate a bench memo from case PDFs
+      estimate       - Preview token count and estimated cost
+      verify         - Verify citations in an existing memo
+      extract-cites  - Extract record citations from briefs
 
     \b
     Run 'bench-memo COMMAND --help' for details on each command.
@@ -313,6 +314,101 @@ def estimate(inputs: tuple[str, ...]):
     console.print(f"\nTotal text: {total_chars:,} characters")
     console.print(f"Estimated tokens: ~{est_tokens:,}")
     console.print(f"Estimated cost: ~${est_cost:.2f}")
+
+
+@cli.command("extract-cites")
+@click.argument("inputs", nargs=-1, required=True, type=click.Path(exists=True))
+@click.option("--output", "-o", default=None, help="Output items file path")
+@click.option("--verbose", "-v", is_flag=True, help="Verbose output")
+def extract_cites(inputs: tuple[str, ...], output: str | None, verbose: bool):
+    """Extract record citations from appellate briefs.
+
+    \b
+    Scans PDFs for record references (R45, (R45:12), Rec 123, Idx 45,
+    etc.) and writes a deduplicated items file listing every cited
+    record index number.  Use this to identify which record items
+    the briefs actually cite, so you can selectively fetch only
+    those items with record-fetch --items.
+
+    \b
+    INPUTS can be:
+      - A single directory containing PDF files for one case
+      - One or more individual PDF file paths (supports shell globs)
+
+    \b
+    OUTPUT defaults to ./output/<label>_items.txt next to the input.
+    Use -o to specify a different path.
+
+    \b
+    Examples:
+      bench-memo extract-cites ./case_folder/
+      bench-memo extract-cites ./cases/brief1.pdf ./cases/brief2.pdf
+      bench-memo extract-cites ./case_folder/ -o items.txt
+    """
+    from src.extractor.pdf_extractor import extract
+    from src.extractor.record_citations import (
+        detect_case_number,
+        extract_record_numbers,
+        format_items_file,
+    )
+
+    setup_logging(verbose)
+
+    # Discover PDFs
+    input_paths = [Path(p) for p in inputs]
+    if len(input_paths) == 1 and input_paths[0].is_dir():
+        pdf_files = sorted(input_paths[0].glob("*.pdf"))
+        label = input_paths[0].name
+        default_output_dir = input_paths[0].parent / "output"
+    else:
+        pdf_files = sorted(input_paths)
+        for p in pdf_files:
+            if not p.is_file():
+                console.print(f"[red]Error:[/red] {p} is not a file.")
+                raise SystemExit(1)
+        first_name = pdf_files[0].stem
+        match = re.match(r"(\d+)", first_name)
+        label = match.group(1) if match else first_name
+        default_output_dir = pdf_files[0].parent / "output"
+
+    if not pdf_files:
+        console.print("[red]No PDF files found.[/red]")
+        raise SystemExit(1)
+
+    # Resolve output path
+    if output is None:
+        output_path = default_output_dir / f"{label}_items.txt"
+    else:
+        output_path = Path(output)
+        if output_path.is_dir():
+            output_path = output_path / f"{label}_items.txt"
+
+    # Extract and collect citations
+    all_numbers: set[int] = set()
+    source_names: list[str] = []
+    case_number = ""
+
+    with _make_progress() as progress:
+        task = progress.add_task("Extracting record citations...", total=len(pdf_files))
+        for pdf_path in pdf_files:
+            progress.update(task, description=f"Scanning {pdf_path.name}...")
+            text = extract(pdf_path)
+            nums = extract_record_numbers(text)
+            all_numbers |= nums
+            source_names.append(pdf_path.name)
+            if not case_number:
+                case_number = detect_case_number(text)
+            if verbose:
+                console.print(f"  {pdf_path.name}: {len(nums)} citations")
+            progress.advance(task)
+
+    # Write output
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    content = format_items_file(all_numbers, source_names, case_number)
+    output_path.write_text(content, encoding="utf-8")
+
+    console.print(f"\n[green]✓[/green] Found [bold]{len(all_numbers)}[/bold] unique record items from {len(pdf_files)} files")
+    console.print(f"  Items file written to [bold]{output_path}[/bold]")
 
 
 if __name__ == "__main__":
